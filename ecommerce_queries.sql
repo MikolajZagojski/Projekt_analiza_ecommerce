@@ -1,14 +1,18 @@
---- Zapytanie 1: Jaka jest średnia wartość zamówienia dla klientów w wieku 30-40 lat, z podziałem na państwa?
+--- Zapytanie 1: Które państwa mają najwyższą średnią wartość zamówienia w 
+---dla klientów w wieku 30-40 lat?
+
 /* Najwyższa średnia dla klientów w wieku 30-40 lat występuje w Kolumbii, ale przez małą liczbę zamówień (tylko 5) ten wynik nie jest miarodajny.
-Wśród krajów z dużą liczbą transakcji (powyżej 100) liderem jest Japonia, gdzie średnia wartość zamówienia wynosi 61,63 USD.*/
+Wśród krajów z dużą liczbą transakcji (powyżej 100) liderem jest Japonia, gdzie średnia wartość zamówienia wynosi 62,79 USD.*/
 
 SELECT 
     u.country AS kraje,
-    COUNT(*) AS ilosc_zamowien, 
-    ROUND(AVG(oi.sale_price)::numeric,2) AS srednia_wartosc_koszyka -- ROUND przyjmuje numeric a AVG zwaca float
+    COUNT(oi.id) AS ilosc_zamowien, 
+    ROUND(AVG(oi.sale_price)::numeric,2) AS srednia_wartosc_koszyka -- ROUND przyjmuje numeric a AVG zwraca float
 FROM users AS u 
 JOIN order_items AS oi ON u.id = oi.user_id
-WHERE (u.age BETWEEN  30 AND 40)  
+JOIN orders AS o ON oi.order_id = o.order_id
+WHERE oi.returned_at IS NULL
+AND (u.age BETWEEN 30 AND 40)
 GROUP BY u.country
 ORDER BY srednia_wartosc_koszyka DESC;
 
@@ -114,7 +118,7 @@ JOIN (
     FROM order_items
     GROUP BY order_id
 ) AS oi ON o.order_id = oi.order_id
-WHERE u.age < 25
+WHERE u.age BETWEEN 20 AND 40
 GROUP BY u.gender
 ORDER BY Plec;
 
@@ -159,9 +163,5 @@ AND oi.created_at::date >= '2025-01-01'
 AND oi.created_at::date < '2026-01-01'
 GROUP BY p.name, p.category
 ORDER BY ilosc_zwrotow DESC;
-
-
-
-
 
 
