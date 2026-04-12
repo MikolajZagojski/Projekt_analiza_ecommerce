@@ -159,8 +159,8 @@ SELECT
 FROM order_items AS oi
 JOIN products AS p ON oi.product_id = p.id
 WHERE oi.returned_at IS NOT NULL
-AND oi.created_at::date >= '2025-01-01'
-AND oi.created_at::date < '2026-01-01'
+AND oi.created_at >= '2025-01-01'
+AND oi.created_at < '2026-01-01'
 GROUP BY p.name, p.category
 ORDER BY ilosc_zwrotow DESC;
 
